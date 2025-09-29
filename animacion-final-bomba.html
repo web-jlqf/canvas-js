@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Animación con estados</title>
+</head>
+<body>
+
+  <p>Canvas:</p>
+  <canvas id="micanvas" width="626" height="347" style="border:1px solid #d3d3d3;">
+    No soporta canvas
+  </canvas>
+
+  <script>
+    window.onload = function() {
+      // Imagen de fondo
+      var img1 = new Image();
+      img1.name = "fondo";
+      img1.src = "fondo.png";
+
+      // Imagen de sprites
+      var img2 = new Image();
+      img2.name = "bomba";
+      img2.src = "bomba.png";
+
+      // Canvas y contexto
+      var c = document.getElementById("micanvas");
+      var ctx = c.getContext("2d");
+
+      // Coordenadas del recorte de la hoja de sprites
+      var x = 0, y = 0;
+
+      // Estados de la animación
+      const CARGA = 100;
+      const INICIO = 200;
+      var estado = CARGA;
+
+      function animacion() {
+        if (estado === CARGA) {
+          // Espera hasta que ambas imágenes estén cargadas
+          if (img1.complete === true && img2.complete === true) {
+            estado = INICIO;
+          }
+        } else {
+          // Limpiar canvas
+          ctx.clearRect(0, 0, c.width, c.height);
+
+          // Dibujar fondo
+          ctx.drawImage(img1, 0, 0, 626, 347, 0, 0, 626, 347);
+
+          // Dibujar sprite en movimiento
+          ctx.drawImage(img2, x, y, 320, 232, 320, 100, 320, 232);
+
+          // Avanzar en la hoja de sprites
+          x = (x + 320) % 1600;
+          if (x === 0) {
+            y = (y + 232) % 1160;
+          }
+        }
+      }
+
+      // Ejecutar animación cada 100 ms
+      setInterval(animacion, 100);
+    }
+  </script>
+
+</body>
+</html>
+

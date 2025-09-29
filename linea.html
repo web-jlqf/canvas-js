@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas: línea básica</title>
+</head>
+<body>
+
+  <!-- Elemento canvas con borde -->
+  <canvas id="canvas" width="200" height="100" style="border:1px solid #d3d3d3;">
+    Tu navegador no soporta canvas.
+  </canvas>
+
+  <script>
+    // Obtenemos el elemento canvas
+    var c = document.getElementById("canvas");
+
+    // Creamos el contexto 2D para dibujar
+    var ctx = c.getContext("2d");
+
+    // Dibujamos una línea desde la esquina superior izquierda (0,0) 
+    // hasta la esquina inferior derecha (200,100)
+    ctx.moveTo(0, 0);
+    ctx.lineTo(200, 100);
+    ctx.stroke();
+  </script>
+
+</body>
+</html>
+

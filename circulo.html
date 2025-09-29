@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas: círculo básico</title>
+</head>
+<body>
+
+  <!-- Elemento canvas con borde -->
+  <canvas id="canvas" width="200" height="100" style="border:1px solid #d3d3d3;">
+    El navegador no soporta canvas
+  </canvas>
+
+  <script>
+    // Obtenemos el elemento canvas
+    var c = document.getElementById("canvas");
+
+    // Creamos el contexto 2D para dibujar
+    var ctx = c.getContext("2d");
+
+    // Iniciamos un nuevo trazo
+    ctx.beginPath();
+
+    // Dibujamos un arco (círculo completo)
+    // arc(x, y, radio, ánguloInicio, ánguloFinal)
+    ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+
+    // Renderizamos el contorno del círculo
+    ctx.stroke();
+  </script> 
+
+</body>
+</html>

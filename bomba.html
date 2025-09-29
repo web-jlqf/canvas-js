@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Imagen a usar:</p>
+<img id="bomba" width="500" height="500" src="bomba.png">
+
+<p>Canvas:</p>
+<canvas id="micanvas" width="320" height="232" style="border:1px solid #d3d3d3;">
+No soporta canvas
+</canvas>
+
+<script>
+window.onload = function() {
+
+  var img = new Image();
+  img.name="bomba";
+  img.src= "bomba.png";
+
+  var c = document.getElementById("micanvas");
+  var ctx = c.getContext("2d");
+
+
+  ctx.drawImage(img, 0, 928, 320,232, 0, 0, 320, 232);
+}
+</script>
+
+</body>
+</html>
+

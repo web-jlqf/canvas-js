@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas: combinación de imágenes</title>
+</head>
+<body>
+
+  <p>Canvas:</p>
+  <canvas id="micanvas" width="626" height="347" style="border:1px solid #d3d3d3;">
+    No soporta canvas
+  </canvas>
+
+  <script>
+    window.onload = function() {
+      // Definimos las imágenes
+      var img1 = new Image();
+      img1.name = "fondo";
+      img1.src = "fondo.png";
+
+      var img2 = new Image();
+      img2.name = "bomba";
+      img2.src = "bomba.png";
+
+      // Obtenemos el contexto del canvas
+      var c = document.getElementById("micanvas");
+      var ctx = c.getContext("2d");
+
+      // Función para verificar si ambas imágenes han cargado
+      function cargar() {
+        if (img1.complete !== true && img2.complete !== true) {
+          setTimeout(cargar, 100);
+        } else {
+          // Dibujar la imagen de fondo ocupando todo el canvas
+          ctx.drawImage(img1, 0, 0, 626, 347, 0, 0, 626, 347);
+
+          // Dibujar una sección de la imagen de la bomba en el canvas
+          ctx.drawImage(img2, 0, 928, 320, 232, 0, 100, 320, 232);
+        }
+      }
+
+      // Llamamos periódicamente hasta que las imágenes estén cargadas
+      setTimeout(cargar, 100);
+    }
+  </script>
+
+</body>
+</html>
