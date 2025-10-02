@@ -63,130 +63,111 @@ class NaveEspacial {
 // ---------------------------
 // Clase/función Animacion
 // ---------------------------
-function Animacion() {
-  this.estado = CREACION;
+class Animacion {
+  constructor() {
+    this.estado = CREACION;
 
-  // Usamos objeto simple en lugar de Array para llaves por nombre
-  this.imagenes = {};
-  this.canvas = document.getElementById("canvas");
-  this.contexto = this.canvas.getContext("2d");
+    // Usamos objeto simple para almacenar imágenes
+    this.imagenes = {};
+    this.canvas = document.getElementById("canvas");
+    this.contexto = this.canvas.getContext("2d");
 
-  // Doble buffer (canvas auxiliar)
-  this.auxcanvas = document.createElement("canvas");
-  this.auxcontexto = this.auxcanvas.getContext("2d");
+    // Canvas auxiliar (doble buffer)
+    this.auxcanvas = document.createElement("canvas");
+    this.auxcontexto = this.auxcanvas.getContext("2d");
 
-  // Ajuste a tamaño de la página
-  this.canvas.width  = document.body.clientWidth;
-  this.canvas.height = document.body.clientHeight;
-  this.auxcanvas.width  = document.body.clientWidth;
-  this.auxcanvas.height = document.body.clientHeight;
+    // Ajustar a tamaño de ventana
+    this.canvas.width  = document.body.clientWidth;
+    this.canvas.height = document.body.clientHeight;
+    this.auxcanvas.width  = document.body.clientWidth;
+    this.auxcanvas.height = document.body.clientHeight;
 
-  this.nave = null;
-
-  // Guardamos referencia a "this" para usar dentro de callbacks
-  var objeto = this;
+    this.nave = null;
+  }
 
   // Cargar imágenes requeridas
-  this.cargarImagenes = function () {
-    objeto.imagenes["nave"] = new Image();
-    objeto.imagenes["nave"].name = "nave";
-    objeto.imagenes["nave"].src  = "img/nave.png";
-  };
+  cargarImagenes() {
+    this.imagenes["nave"] = new Image();
+    this.imagenes["nave"].name = "nave";
+    this.imagenes["nave"].src  = "img/nave.png";
+  }
 
   // Un paso de actualización/redibujado
-  this.actualizacion = function () {
-    // Limpiamos ambos contextos
-    objeto.auxcontexto.clearRect(0, 0, objeto.canvas.width, objeto.canvas.height);
-    objeto.contexto.clearRect(0, 0, objeto.canvas.width, objeto.canvas.height);
+  actualizacion() {
+    this.auxcontexto.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.contexto.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Dibujamos en el buffer auxiliar
-    objeto.nave.dibujar(objeto.auxcontexto);
+    this.nave.dibujar(this.auxcontexto);
 
-    // Volcamos el buffer auxiliar al canvas visible (doble buffer)
-    // drawImage(srcCanvas, sx, sy, sw, sh, dx, dy, dw, dh)
-    objeto.contexto.drawImage(objeto.auxcanvas,
-      0, 0, objeto.auxcanvas.width, objeto.auxcanvas.height,
-      0, 0, objeto.canvas.width, objeto.canvas.height
+    // Volcar buffer auxiliar al canvas principal
+    this.contexto.drawImage(
+      this.auxcanvas,
+      0, 0, this.auxcanvas.width, this.auxcanvas.height,
+      0, 0, this.canvas.width, this.canvas.height
     );
 
-    // Avance en la dirección activa (x o y) usando punteros a métodos
-    objeto.nave.sdireccion(objeto.nave.gdireccion() + objeto.nave.getVelocidad());
-  };
+    // Mover nave usando punteros a métodos
+    this.nave.sdireccion(this.nave.gdireccion() + this.nave.getVelocidad());
+  }
 
-  // Manejo de teclado (flechas)
-  this.desplazamiento = function (e) {
+  // Manejo de teclado
+  desplazamiento(e) {
     e = e || window.event;
-    const code = e.keyCode; // 37, 38, 39, 40 (ver arriba)
+    const code = e.keyCode;
 
     if (code === ARRIBA || code === ABAJO) {
-      // Vertical: usar Y
-      objeto.nave.sdireccion = objeto.nave.setY;
-      objeto.nave.gdireccion = objeto.nave.getY;
-      if (code === ARRIBA) {
-        // Arriba (negativo)
-        objeto.nave.setVelocidad(-3);
-      } else {
-        // Abajo
-        objeto.nave.setVelocidad(3);
-      }
+      this.nave.sdireccion = this.nave.setY;
+      this.nave.gdireccion = this.nave.getY;
+      this.nave.setVelocidad(code === ARRIBA ? -3 : 3);
+
     } else if (code === IZQ || code === DER) {
-      // Horizontal: usar X
-      objeto.nave.sdireccion = objeto.nave.setX;
-      objeto.nave.gdireccion = objeto.nave.getX;
-      if (code === IZQ) {
-        // Izquierda
-        objeto.nave.setVelocidad(-3);
-      } else {
-        // Derecha
-        objeto.nave.setVelocidad(3);
-      }
+      this.nave.sdireccion = this.nave.setX;
+      this.nave.gdireccion = this.nave.getX;
+      this.nave.setVelocidad(code === IZQ ? -3 : 3);
     }
-  };
+  }
 
-  // Máquina de estados simple: CREACION -> PRECARGA -> INICIO
-  this.ejecutarMaquinadeEstados = function () {
-    let imagenesCargadas = true;
-    console.log("Estado:", objeto.estado);
+  // Máquina de estados: CREACION -> PRECARGA -> INICIO
+  ejecutarMaquinadeEstados() {
+    console.log("Estado:", this.estado);
 
-    if (objeto.estado === CREACION) {
-      objeto.cargarImagenes();
-      objeto.estado = PRECARGA;
-      setTimeout(objeto.ejecutarMaquinadeEstados, 100);
+    if (this.estado === CREACION) {
+      this.cargarImagenes();
+      this.estado = PRECARGA;
+      setTimeout(() => this.ejecutarMaquinadeEstados(), 100);
       return;
     }
 
-    if (objeto.estado === PRECARGA) {
-      //Validar
-      for (const k in objeto.imagenes) {
-        if (!objeto.imagenes[k].complete) {
+    if (this.estado === PRECARGA) {
+      let imagenesCargadas = true;
+      for (const k in this.imagenes) {
+        if (!this.imagenes[k].complete) {
           imagenesCargadas = false;
           break;
         }
       }
 
       if (imagenesCargadas) {
-        // Crear la nave cuando la imagen está lista
-        objeto.nave = new NaveEspacial(200, 100, objeto.imagenes["nave"]);
+        this.nave = new NaveEspacial(200, 100, this.imagenes["nave"]);
+        this.nave.gdireccion = this.nave.getX;
+        this.nave.sdireccion = this.nave.setX;
+        this.estado = INICIO;
 
-        // Dirección por defecto: eje X
-        objeto.nave.gdireccion = objeto.nave.getX;
-        objeto.nave.sdireccion = objeto.nave.setX;
-
-        // Activar controles y pasar a INICIO
-        objeto.estado = INICIO;
-        document.onkeydown = objeto.desplazamiento;
+        // Ojo: bind(this) para que "this" siga siendo la instancia
+        document.onkeydown = this.desplazamiento.bind(this);
       }
 
-      setTimeout(objeto.ejecutarMaquinadeEstados, 100);
+      setTimeout(() => this.ejecutarMaquinadeEstados(), 100);
       return;
     }
 
-    if (objeto.estado === INICIO) {
-      objeto.actualizacion();
-      setTimeout(objeto.ejecutarMaquinadeEstados, 100);
+    if (this.estado === INICIO) {
+      this.actualizacion();
+      setTimeout(() => this.ejecutarMaquinadeEstados(), 100);
     }
-  };
+  }
 }
+
 
 // --- Instanciar y arrancar ---
 var animacion = new Animacion();
